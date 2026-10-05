@@ -1,15 +1,18 @@
 <div align="center">
 
 # 🧠 DataCenter AI
+
 ### Context-aware AI agent with RAG, tools, session memory, and configurable LLM providers
 
 **RAG · Semantic Search · Tool Calling · Session Memory · Extensible Providers**
+
 <p>
   <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+">
   <img src="https://img.shields.io/badge/Discord-Integration-5865F2?logo=discord&logoColor=white" alt="Discord integration">
   <img src="https://img.shields.io/badge/License-MIT-2E7D32" alt="MIT License">
   <img src="https://img.shields.io/badge/Status-Experimental-orange" alt="Experimental">
 </p>
+
 Agente de IA experimental e extensível que combina recuperação semântica de conhecimento local, memória de sessão, ferramentas externas e backends de LLM compatíveis com a API OpenAI.
 
 **Público-alvo:** desenvolvedores, estudantes e entusiastas interessados em agentes de IA, RAG, semantic search, tool calling e arquiteturas extensíveis baseadas em LLMs.
@@ -17,6 +20,7 @@ Agente de IA experimental e extensível que combina recuperação semântica de 
 </div>
 
 ---
+
 ## Demonstração
 
 <div align="center">
@@ -26,7 +30,9 @@ Agente de IA experimental e extensível que combina recuperação semântica de 
 <sub>Interface CLI demonstrando uma interação com o agente e seu fluxo de geração de respostas.</sub>
 
 </div>
+
 ## Funcionalidades
+
 - **RAG** — recupera contexto semanticamente relevante a partir de fontes de conhecimento locais.
 - **Semantic Search** — utiliza embeddings e FAISS para busca vetorial por similaridade.
 - **Múltiplos formatos** — suporta fontes `.txt`, `.md`, `.json` e `.jsonl`.
@@ -37,6 +43,7 @@ Agente de IA experimental e extensível que combina recuperação semântica de 
 - **CLI** — interface local para interação direta com o agente.
 - **Discord** — integração disponível através do comando `.transcend`.
 - **Async** — operações de geração e execução de ferramentas utilizam fluxo assíncrono.
+
 ## Arquitetura
 
 ```mermaid
@@ -56,11 +63,13 @@ flowchart LR
     Agent --> Provider[LLM Provider]
     Provider --> Backend[LLM Backend]
 ```
+
 O `Agent` é responsável por coordenar o histórico da sessão, o contexto recuperado pelo RAG, as chamadas de ferramentas e a geração das respostas.
 
 O RAG funciona como uma fonte adicional de contexto e não como uma dependência obrigatória. Caso nenhuma fonte de conhecimento compatível esteja disponível, o agente continua operando utilizando o backend de LLM e as ferramentas disponíveis.
 
 As instruções gerais de comportamento do agente são definidas em [`bot/rules.txt`](bot/rules.txt).
+
 ## RAG e fontes de conhecimento
 
 O DataCenter possui um sistema de RAG genérico para incorporar conhecimento local ao contexto do agente.
@@ -81,6 +90,7 @@ Atualmente são suportados:
 | JSON Lines | `.jsonl` |
 
 Documentos maiores são divididos em chunks com sobreposição para preservar parte do contexto entre segmentos.
+
 Os textos são transformados em embeddings utilizando Sentence Transformers com o modelo `all-MiniLM-L6-v2`. Os vetores são normalizados e armazenados em um índice FAISS em memória.
 
 Durante uma consulta:
@@ -102,6 +112,7 @@ LLM
 ```
 
 A busca utiliza similaridade de cosseno através de vetores normalizados e `IndexFlatIP`.
+
 ### Base de conhecimento opcional
 
 A pasta `data/` não precisa conter documentos para que o agente funcione.
@@ -119,6 +130,7 @@ LLM + Tools + Session Context
 Nesse estado, nenhuma informação é apresentada ao modelo como se tivesse sido recuperada de uma base local.
 
 Isso permite utilizar o DataCenter tanto com uma base de conhecimento própria quanto como um agente independente.
+
 ## Providers
 
 | Componente | Papel |
@@ -128,9 +140,11 @@ Isso permite utilizar o DataCenter tanto com uma base de conhecimento própria q
 | LLM backend | Endpoint responsável pela geração das respostas. |
 
 A arquitetura de providers mantém o agente desacoplado do serviço utilizado para inferência.
+
 Endpoint, chave de API e modelo são definidos através de variáveis de ambiente, permitindo utilizar diferentes backends compatíveis sem alterar a lógica principal do agente.
 
 Atualmente, `OpenAICompatible` é a implementação utilizada pela aplicação.
+
 ## Tools
 
 O agente possui uma camada independente para registro e execução de ferramentas.
@@ -142,7 +156,9 @@ O agente possui uma camada independente para registro e execução de ferramenta
 | `search` | Realiza pesquisas na web utilizando `googlesearch-python`. |
 
 O `ToolCaller` atua como intermediário entre o agente e as implementações disponíveis em `tools/`.
+
 A arquitetura permite adicionar novas ferramentas sem acoplar suas implementações diretamente à lógica principal do agente.
+
 ## Tech Stack
 
 <div align="center">
@@ -150,12 +166,14 @@ A arquitetura permite adicionar novas ferramentas sem acoplar suas implementaç�
 <img src="https://skillicons.dev/icons?i=python,discord,git,github" alt="Python, Discord, Git e GitHub">
 
 <br><br>
+
 <img src="https://img.shields.io/badge/FAISS-Vector_Search-0467DF?style=flat-square" alt="FAISS">
 <img src="https://img.shields.io/badge/Sentence_Transformers-Embeddings-yellow?style=flat-square" alt="Sentence Transformers">
 <img src="https://img.shields.io/badge/AsyncIO-Asynchronous-3776AB?style=flat-square&logo=python&logoColor=white" alt="AsyncIO">
 <img src="https://img.shields.io/badge/OpenAI--compatible-LLM_API-412991?style=flat-square" alt="OpenAI-compatible API">
 
 </div>
+
 ## Configuração
 
 `config.py` utiliza variáveis de ambiente para configurar as integrações e o backend de LLM:
@@ -167,6 +185,7 @@ A arquitetura permite adicionar novas ferramentas sem acoplar suas implementaç�
 | `LLM_BASE_URL` | URL base do backend compatível. |
 | `LLM_MODEL` | Identificador do modelo utilizado. |
 | `LLM_PROVIDER` | Identificador reservado para seleção de provider. |
+
 O [`.env.example`](.env.example) contém a estrutura esperada:
 
 ```dotenv
@@ -178,6 +197,7 @@ LLM_PROVIDER=openaicompatible
 ```
 
 > `LLM_PROVIDER` já faz parte da configuração, mas a seleção dinâmica de implementações ainda não está disponível.
+
 ## Instalação
 
 ### 1. Clone o repositório
@@ -210,6 +230,7 @@ Windows PowerShell:
 ```bash
 pip install -r requirements.txt
 ```
+
 ### 4. Configure o ambiente
 
 Copie:
@@ -247,6 +268,7 @@ data/
 Essa etapa é opcional. O agente pode ser iniciado normalmente sem fontes de conhecimento.
 
 ## Execução
+
 ### Aplicação
 
 A partir da raiz do projeto:
@@ -289,7 +311,9 @@ Na integração com Discord:
 Respostas maiores são divididas para respeitar o limite de tamanho das mensagens.
 
 > A integração atual utiliza `discord.py-self` com `self_bot=True`, automatizando uma conta de usuário. Verifique os termos aplicáveis da plataforma antes de utilizá-la.
+
 ## Estrutura
+
 ```text
 .
 ├── assets/
@@ -316,6 +340,7 @@ Respostas maiores são divididas para respeitar o limite de tamanho das mensagen
 ├── main.py                  # Entry point
 └── requirements.txt
 ```
+
 ## Limitações conhecidas
 
 - O índice FAISS é reconstruído em memória a cada inicialização.
@@ -324,6 +349,7 @@ Respostas maiores são divididas para respeitar o limite de tamanho das mensagen
 - O agente ainda não possui um agent loop completo para múltiplos ciclos consecutivos de `LLM → Tool → LLM`.
 - A avaliação em `evals/manual_eval.py` pode realizar chamadas reais ao backend configurado.
 - A integração atual com Discord utiliza modo self-bot.
+
 ## Roadmap
 
 Algumas evoluções planejadas para a arquitetura:
@@ -342,6 +368,7 @@ Distributed under the MIT License. See [`LICENSE`](LICENSE) for details.
 ---
 
 <div align="center">
+
 ### DataCenter AI
 
 `LLM` • `RAG` • `Semantic Search` • `Tool Calling` • `Session Memory`
